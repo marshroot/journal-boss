@@ -1,0 +1,11 @@
+{
+  "name": "journal-v23-collab",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": { "start": "node server.js" },
+  "dependencies": {
+    "@hocuspocus/server": "4.7.0",
+    "@hocuspocus/extension-sqlite": "4.7.0"
+  }
+}

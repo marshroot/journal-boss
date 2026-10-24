@@ -1,0 +1,314 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope", "Inter", system-ui, sans-serif;
+  --font-serif: "Manrope", "Inter", sans-serif; /* Disable serif by mapping to Inter */
+  --font-mono: "Fira Code", monospace;
+
+  /* Color mappings pointing to our CSS properties */
+  --color-bg-dark: var(--bg-dark);
+  --color-bg-card: var(--bg-card);
+  --color-bg-input: var(--bg-input);
+  --color-border-color: var(--border-color);
+  --color-border-focus: var(--border-focus);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-dim: var(--text-dim);
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-purple-muted: var(--accent-purple-muted);
+  --color-accent-purple-soft: var(--accent-purple-soft);
+  /* Osmont restyle: remap violet/purple palettes to green/cyan accent (indigo kept for 'U' status) */
+  --color-purple-50:#ecfff3;--color-purple-100:#d3ffe2;--color-purple-200:#a8ffc6;--color-purple-300:#6dff9a;--color-purple-400:#3dff6a;--color-purple-500:#30ff44;--color-purple-600:#1fd63a;--color-purple-700:#17a82e;--color-purple-800:#147a27;--color-purple-900:#0f4f1c;--color-purple-950:#06290e;
+  --color-violet-50:#e9fffa;--color-violet-100:#c9fff2;--color-violet-200:#94ffe6;--color-violet-300:#5bffd7;--color-violet-400:#22ffca;--color-violet-500:#00ffc2;--color-violet-600:#00d6a3;--color-violet-700:#00a37d;--color-violet-800:#00785c;--color-violet-900:#004d3b;--color-violet-950:#00261d;
+  --color-white: var(--os-fg);
+  --color-fuchsia-500:#00ffc2;--color-fuchsia-400:#22ffca;--color-fuchsia-600:#00d6a3;
+}
+
+ :root {
+  --bg-dark: var(--os-bg);
+  --bg-card: var(--os-s1);
+  --bg-input: var(--os-s2);
+  --border-color: #2a2a2a;
+  --border-focus: #1fbf6a;
+  --text-primary: #ffffff;
+  --text-secondary: #bdbdbd;
+  --text-dim: #6b6b6b;
+  --accent-purple: #30ff44;
+  --accent-purple-glow: rgba(0, 230, 150, 0.35);
+  --accent-purple-muted: #7dffc4;
+  --accent-purple-muted-glow: rgba(125, 255, 196, 0.28);
+  --accent-purple-soft: #00ffc2;
+  --accent-purple-soft-glow: rgba(0, 255, 194, 0.24);
+  --glow-color: rgba(0, 230, 150, 0.14);
+  --card-shadow: none;
+  --overlay-opacity: 0.08;
+  --scanline-opacity: 0;
+  --glass-bg: rgb(var(--os-bg-rgb) / 0.72);
+  --glass-blur: 22px;
+  --glass-border: rgb(var(--os-fg-rgb) / 0.08);
+  --glass-specular: rgb(var(--os-fg-rgb) / 0.12);
+}
+
+.dark {
+  --bg-dark: var(--os-bg); --bg-card: var(--os-s1); --bg-input: var(--os-s2);
+  --border-color: #2a2a2a; --border-focus: #1fbf6a;
+  --text-primary: #ffffff; --text-secondary: #bdbdbd; --text-dim: #6b6b6b;
+  --accent-purple: #30ff44; --accent-purple-glow: rgba(0, 230, 150, 0.35);
+  --accent-purple-muted: #7dffc4; --accent-purple-muted-glow: rgba(125, 255, 196, 0.28);
+  --accent-purple-soft: #00ffc2; --accent-purple-soft-glow: rgba(0, 255, 194, 0.24);
+  --glow-color: rgba(0, 230, 150, 0.14); --card-shadow: 0 14px 40px rgba(0,0,0,.45);
+  --overlay-opacity: .08; --scanline-opacity: 0; --glass-bg: rgb(var(--os-bg-rgb) / .72); --glass-blur: 22px;
+  --glass-border: rgb(var(--os-fg-rgb)/.08); --glass-specular: rgb(var(--os-fg-rgb)/.12);
+}
+
+@utility liquid-glass {
+  position: relative;
+  background: 
+    linear-gradient(135deg, rgb(var(--os-fg-rgb) / 0.03) 0%, rgb(var(--os-fg-rgb) / 0) 100%), 
+    rgb(var(--os-bg-rgb) / 0.01); /* Maximum transparency */
+  border: 1px solid rgb(var(--os-fg-rgb) / 0.08); /* Clean white glass border */
+  box-shadow: 
+    inset 0 1px 0px 0px rgb(var(--os-fg-rgb) / 0.18), /* Specular shiny top reflection */
+    inset 0 -1px 0px 0px rgba(0, 0, 0, 0.25), /* Subtle bottom shadow */
+    0 15px 30px -10px rgba(0, 0, 0, 0.5); /* Soft premium shadow, no colorful glows */
+}
+
+/* Pseudo-elements must be styled in standard CSS, outside Tailwind's @utility */
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit; /* Align with parent container's rounded corners */
+  backdrop-filter: blur(5px) saturate(140%) contrast(98%);
+  -webkit-backdrop-filter: blur(5px) saturate(140%) contrast(98%);
+  mask-image: linear-gradient(135deg, black 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(135deg, black 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+@utility liquid-glass-dense {
+  position: relative;
+  background: 
+    linear-gradient(135deg, rgb(var(--os-fg-rgb) / 0.03) 0%, rgb(var(--os-fg-rgb) / 0) 100%), 
+    var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 
+    inset 0 1px 0px 0px var(--glass-specular), /* Specular shiny top reflection */
+    inset 0 -1px 0px 0px rgba(0, 0, 0, 0.25), /* Subtle bottom shadow */
+    0 15px 30px -10px rgba(0, 0, 0, 0.5); /* Soft premium shadow */
+}
+
+.liquid-glass-dense::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit; /* Align with parent container's rounded corners */
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%) contrast(98%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%) contrast(98%);
+  pointer-events: none;
+}
+
+@utility coordinate-grid {
+  background-image: 
+    linear-gradient(rgb(var(--os-fg-rgb) / 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--os-fg-rgb) / 0.08) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px;
+  background-position: center center;
+}
+
+@utility liquid-glass-light {
+  background: rgb(var(--os-fg-rgb) / 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(32, 42, 54, 0.08);
+  box-shadow: 0 12px 40px 0 rgba(32, 42, 54, 0.06);
+}
+
+@utility text-glow {
+  text-shadow: 0 0 12px var(--accent-purple-glow);
+}
+
+@utility blur-overlay {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 10vh;
+  z-index: 2;
+  pointer-events: none;
+  backdrop-filter: blur(25px) saturate(1.5);
+  -webkit-backdrop-filter: blur(25px) saturate(1.5);
+}
+
+@utility blur-overlay-top {
+  top: 0;
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+
+@utility blur-overlay-bottom {
+  bottom: 0;
+  mask-image: linear-gradient(to top, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 70%, transparent 100%);
+}
+
+/* Grid overlay and scanline visual effects from old theme */
+.grid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+      linear-gradient(rgba(0, 230, 150, var(--overlay-opacity)) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 230, 150, var(--overlay-opacity)) 1px, transparent 1px);
+  background-size: 50px 50px;
+  z-index: -2;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%, 
+      rgba(0, 0, 0, 0.15) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: var(--scanline-opacity);
+  transition: opacity 0.4s ease;
+}
+
+/* Base scrollbar styling for extra premium feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 230, 150, 0.28);
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(125, 255, 196, 0.20);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 230, 150, 0.48);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(125, 255, 196, 0.35);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar utility for clean card layouts */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+}
+
+/* Custom styling for difficulty range slider */
+.difficulty-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid #30ff44;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.difficulty-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+.difficulty-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2.5px solid #30ff44;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.difficulty-slider::-moz-range-thumb:hover {
+  transform: scale(1.25);
+}
+
+/* Tooltip styling for difficulty level switch */
+.difficulty-btn {
+  position: relative;
+}
+
+.difficulty-tooltip {
+  position: absolute;
+  bottom: 125%; /* Position above the button */
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--os-s2);
+  border: 1px solid rgb(var(--os-fg-rgb) / 0.1);
+  color: rgb(var(--os-fg-rgb) / 0.9);
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 400;
+  line-height: 1.4;
+  width: 220px;
+  white-space: normal;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  transition-delay: 0s;
+  text-align: left;
+}
+
+.difficulty-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--os-s2) transparent transparent transparent;
+}
+
+/* On hover, trigger after 500ms (0.5s) */
+.difficulty-btn:hover .difficulty-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 0.5s;
+}
+
+.code-lock-banner{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:12px 14px;border:1px solid rgba(0, 255, 194,.22);border-radius:14px;background:rgba(0, 230, 150,.08);color:rgb(var(--os-fg-rgb)/.72);font-size:13px}.code-lock-banner strong{color:#7dffc4;white-space:nowrap}.code-lock-banner span{color:rgb(var(--os-fg-rgb)/.48)}

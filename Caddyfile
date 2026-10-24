@@ -1,0 +1,10 @@
+{$DOMAIN:localhost} {
+    encode zstd gzip
+    header {
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        X-Frame-Options "SAMEORIGIN"
+        Permissions-Policy "camera=(self), microphone=(self), geolocation=()"
+    }
+    reverse_proxy frontend:80
+}

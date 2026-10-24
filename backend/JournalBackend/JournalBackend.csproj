@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <!-- Detect installed .NET runtimes on Windows, Linux, or macOS -->
+    <DotNetAppDirWindows>$(ProgramFiles)\dotnet\shared\Microsoft.NETCore.App</DotNetAppDirWindows>
+    <DotNetAppDirUnix>/usr/share/dotnet/shared/Microsoft.NETCore.App</DotNetAppDirUnix>
+    <DotNetAppDirMac>/usr/local/share/dotnet/shared/Microsoft.NETCore.App</DotNetAppDirMac>
+
+    <RuntimeDir Condition="Exists('$(DotNetAppDirWindows)')">$(DotNetAppDirWindows)</RuntimeDir>
+    <RuntimeDir Condition="'$(RuntimeDir)' == '' And Exists('$(DotNetAppDirUnix)')">$(DotNetAppDirUnix)</RuntimeDir>
+    <RuntimeDir Condition="'$(RuntimeDir)' == '' And Exists('$(DotNetAppDirMac)')">$(DotNetAppDirMac)</RuntimeDir>
+
+    <!-- Detect versions -->
+    <HasNet10 Condition="'$(RuntimeDir)' != '' And $([System.IO.Directory]::GetDirectories('$(RuntimeDir)', '10.*').Length) &gt; 0">true</HasNet10>
+    <HasNet9 Condition="'$(RuntimeDir)' != '' And $([System.IO.Directory]::GetDirectories('$(RuntimeDir)', '9.*').Length) &gt; 0">true</HasNet9>
+    <HasNet8 Condition="'$(RuntimeDir)' != '' And $([System.IO.Directory]::GetDirectories('$(RuntimeDir)', '8.*').Length) &gt; 0">true</HasNet8>
+    <TargetFramework>net9.0</TargetFramework>
+
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Livekit.Server.Sdk.Dotnet" Version="1.2.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.2" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.20" />
+  </ItemGroup>
+
+</Project>

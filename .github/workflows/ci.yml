@@ -1,0 +1,104 @@
+name: Jornal CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+      - run: dotnet restore backend/JournalBackend.Tests/JournalBackend.Tests.csproj
+      - run: dotnet build backend/JournalBackend/JournalBackend.csproj --configuration Release --no-restore
+      - run: dotnet test backend/JournalBackend.Tests/JournalBackend.Tests.csproj --configuration Release --no-restore
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --ignore-scripts
+        working-directory: frontend
+      - run: npm run lint
+        working-directory: frontend
+      - run: npm test
+        working-directory: frontend
+      - run: npm run integration:contracts
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    timeout-minutes: 15
+    env:
+      JWT_KEY: ci-only-jwt-key-must-be-at-least-32-characters-long
+      ADMIN_LOGIN: ci-admin
+      ADMIN_PASSWORD: ci-admin-password-123
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose config --quiet
+      - run: docker compose build --pull
+      - run: docker compose up -d
+      - name: Run production compose smoke checks
+        run: ./scripts/compose-production-smoke.sh
+      - name: Wait for frontend health
+        shell: bash
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:3000/health >/tmp/health.txt; then
+              cat /tmp/health.txt
+              exit 0
+            fi
+            sleep 3
+          done
+          docker compose ps -a
+          docker compose logs --no-color --tail=250 backend collab frontend
+          exit 1
+      - name: Install Playwright Chromium
+        run: npx --yes @playwright/test@1.55.0 install --with-deps chromium
+      - name: Run browser E2E smoke tests
+        env:
+          E2E_BASE_URL: http://127.0.0.1:3000
+          E2E_ADMIN_LOGIN: ci-admin
+          E2E_ADMIN_PASSWORD: ci-admin-password-123
+        run: npx --yes @playwright/test@1.55.0 test --config=frontend/playwright.config.mjs
+      - run: docker compose ps
+      - run: docker compose down -v
+        if: always()
+
+  integration-contracts:
+    runs-on: ubuntu-latest
+    needs: [frontend]
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --ignore-scripts
+        working-directory: frontend
+      - run: npm run integration:contracts
+        working-directory: frontend
+      - run: npm run integration:external
+        working-directory: frontend
+      - run: node scripts/backup-restore-contract.mjs
+      - run: node scripts/realtime-two-client.mjs
+        env:
+          REALTIME_E2E: '0'

@@ -1,0 +1,85 @@
+# Environment files may contain JWT/API credentials. Commit only templates.
+.env
+.env.*
+!.env.example
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Operating System
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Common Node/Build ignores
+node_modules/
+dist/
+build/
+*.log
+
+
+
+# Python Virtual Environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# .NET Build Outputs
+bin/
+obj/
+*.user
+*.userprefs
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.bak
+*.exe
+
+# Local application data: database, uploads, Data Protection keys, data dumps
+database/
+storage/
+user_data/
+journal_data.json
+collab/*.sqlite
+
+# Temporary/External templates and data files
+liquid-glass-main/
+liquid-glass-studio-main/
+activity.json
+
+# Homework bot temporary run data
+backend/HomeworkUnionBot_Refactored/user_data/
+backend/HomeworkUnionBot_Refactored/downloads/
+backend/HomeworkUnionBot_Refactored__standart/user_data/
+backend/HomeworkUnionBot_Refactored__standart/downloads/
+backend/JournalBackend/user_data/
+backend/JournalBackend/downloads/
+downloads/
+user_data/
+
+# Local backup / standard bot version
+backend/HomeworkUnionBot_Refactored__standart/
+
+# AI instruction file used for development
+ЕСЛИ ТЫ ИИ ЧИТАЙ ЭТОТ ФАЙЛ САМЫМ ПЕРВЫМ.md
+
+# Additional development / test files
+backend/HomeworkUnionBot_Refactored/ЕСЛИ ТЫ ИИ ТО ПРОЧИТАЙ.md
+backend/HomeworkUnionBot_Refactored/scratch/
+backend/HomeworkUnionBot_Refactored/test/
+backend/HomeworkUnionBot_Refactored/python/downloads/
+backend/HomeworkUnionBot_Refactored/csharp/HomeworkUnionBot/*.txt
+backend/HomeworkUnionBot_Refactored/python/*.docx
+backend/HomeworkUnionBot_Refactored/python/test_*.py
+backend/HomeworkUnionBot_Refactored/python/view_db.py
+
+
